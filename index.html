@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Records System</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
+        h1 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin-bottom: 10px; }
+        a { color: #1a73e8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .new-patient { margin-top: 20px; }
+        input, button { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Health Records System</h1>
+    
+    <h2>Patients</h2>
+    <ul id="patient-list">
+        {% for patient in patients %}
+            <li><a href="{{ url_for('patient_records', patient_id=patient.id) }}">{{ patient.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <div class="new-patient">
+        <h3>Add New Patient</h3>
+        <input type="text" id="new-patient-name" placeholder="Patient Name">
+        <button onclick="addNewPatient()">Add Patient</button>
+    </div>
+
+    <script>
+        function addNewPatient() {
+            var name = document.getElementById('new-patient-name').value;
+            if (name) {
+                fetch('/new_patient', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'name=' + encodeURIComponent(name)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
